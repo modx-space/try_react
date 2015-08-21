@@ -26,6 +26,9 @@
         });
       },
       handleCommentSubmit: function(comment){
+        var comments = this.state.data;
+        var newComments = comments.concat([comment]);
+        this.setState({data: newComments});
         // submit to server and refresh the list
         $.ajax({
           url: this.props.url,
