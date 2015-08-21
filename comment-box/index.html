@@ -46,10 +46,10 @@
 
     var CommentList = React.createClass({
       render: function() {
-        var node = this.props.data.map(function(comment){
+        var node = this.props.data.map(function(item){
           return (
-            <Comment author={comment.author}>
-            {comment.text}
+            <Comment author={item.author}>
+            {item.comment}
             </Comment>
           );
         });
@@ -62,11 +62,25 @@
     });
 
     var CommentForm = React.createClass({
+      handleSubmit: function(e){
+        e.preventDefault();
+        var author = this.refs.author.getDOMNode().value.trim();
+        var comment = this.refs.comment.getDOMNode().value.trim();
+        if(!comment || !author){
+          return;
+        }
+        // send post request to server
+        this.refs.author.getDOMNode().value = '';
+        this.refs.comment.getDOMNode().value = '';
+        return;
+      },
       render: function() {
         return (
-          <div className="commentForm">
-          Welcome to React, I am a commentForm.
-          </div>
+          <form className="commentForm" onSubmit={this.handleSubmit}>
+            <input type="text" placeholder="Your name" ref="author"/>
+            <input type="text" placeholder="Say something..." ref="comment"/>
+            <input type="submit" value="Post" />
+          </form>
         );
       }
     });
