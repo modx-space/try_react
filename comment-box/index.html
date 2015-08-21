@@ -25,6 +25,21 @@
           }.bind(this)
         });
       },
+      handleCommentSubmit: function(comment){
+        // submit to server and refresh the list
+        $.ajax({
+          url: this.props.url,
+          dataType: 'json',
+          type: 'POST',
+          data: comment,
+          success: function(data){
+            this.setState({data: data});
+          }.bind(this),
+          error: function(xhr, status, err){
+            console.error(this.props.url, status, err.toString());
+          }.bind(this)
+        });
+      },
       getInitialState: function(){
         return {data: []};
       },
@@ -38,7 +53,7 @@
           <h1>Comments</h1>
           <CommentList data={this.state.data}/>
           <hr/>
-          <CommentForm />
+          <CommentForm onCommnetSubmit={this.handleCommentSubmit} />
           </div>
         );
       }
@@ -70,6 +85,7 @@
           return;
         }
         // send post request to server
+        this.props.onCommnetSubmit({author: author, comment: comment});
         this.refs.author.getDOMNode().value = '';
         this.refs.comment.getDOMNode().value = '';
         return;
