@@ -17,22 +17,56 @@
 
     <script type="text/jsx">
     var FilterList = React.createClass({
+      getInitialState: function(){
+        return { filterText: 'ball', isValidOnly: false };
+      },
+
+      handleUserInput: function(filter, isValid) {
+        this.setState({
+            filterText:  filter,
+            isValidOnly: isValid
+          });
+      },
+
       render: function() {
         return (
           <div className="col-md-offset-4 col-md-4">
-            <SearchBar />
+            <SearchBar
+              filterText={this.state.filterText}
+              isValidOnly={this.state.isValidOnly}
+              onUserInput={this.handleUserInput}
+            />
             <hr/>
-            <ItemList items={this.props.items} />
+            <ItemList
+              items={this.props.items}
+              filterText={this.state.filterText}
+              isValidOnly={this.state.isValidOnly}
+            />
           </div>
         );
       }
     });
 
     var SearchBar = React.createClass({
+      handleChange: function() {
+        this.props.onUserInput(
+          this.refs.filter.getDOMNode().value,
+          this.refs.isValid.getDOMNode().checked
+        );
+      },
+
       render: function() {
         return (
           <form>
-            <input type="text" className="form-control" placeholder="Serach..." ref="search"/>
+            <div className="form-group">
+              <input type="text" className="form-control" placeholder="Serach..." value={this.props.filterText} ref="filter" onChange={this.handleChange} />
+            </div>
+            <div className="checkbox">
+              <label>
+                <input type="checkbox" checked={this.props.isValidOnly} ref="isValid"
+                        onChange={this.handleChange} /> Show Valid Items
+              </label>
+            </div>
           </form>
         );
       }
@@ -43,12 +77,15 @@
         var rows = [];
         var curCategory = null;
         this.props.items.forEach(function(item) {
+          if (item.name.indexOf(this.props.filterText) == -1 || (!item.stocked && this.props.isValidOnly)) {
+            return;
+          }
           if(item.category != curCategory){
             rows.push(<Category category={item.category} key={item.category} />);
             curCategory = item.category;
           }
           rows.push(<Item key={item.name} item={item} />);
-        });
+        }.bind(this));
         return (
           <table className="table table-hover">
             <thead>
