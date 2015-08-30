@@ -79,9 +79,12 @@
 
     var Item = React.createClass({
       render: function() {
+        var name = this.props.item.stocked ?
+          this.props.item.name :
+          <span className="label label-default">{this.props.item.name}</span>
         return (
           <tr>
-            <td>{this.props.item.name}</td>
+            <td>{name}</td>
             <td>{this.props.item.price}</td>
           </tr>
         );
