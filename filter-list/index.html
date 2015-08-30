@@ -10,7 +10,7 @@
   <body>
     <center>
       <h3>
-        <span class="label label-info">可检索列表</span>
+        <span class="label label-success">可检索列表</span>
       </h3>
     </center>
     <div id="content" class="row"></div>
@@ -41,7 +41,12 @@
     var ItemList = React.createClass({
       render: function() {
         var rows = [];
+        var curCategory = null;
         this.props.items.forEach(function(item) {
+          if(item.category != curCategory){
+            rows.push(<Category category={item.category} key={item.category} />);
+            curCategory = item.category;
+          }
           rows.push(<Item key={item.name} item={item} />);
         });
         return (
@@ -60,6 +65,18 @@
       }
     });
 
+    var Category = React.createClass({
+      render: function() {
+        return (
+          <tr>
+            <th colSpan="2">
+              <span className="label label-info">{this.props.category}</span>
+            </th>
+          </tr>
+        );
+      }
+    });
+
     var Item = React.createClass({
       render: function() {
         return (
@@ -72,12 +89,12 @@
     });
 
     var items = [
-      {category: 'Sporting Goods', price: '$49.99',  stocked: true,  name: 'Football'},
-      {category: 'Sporting Goods', price: '$9.99',   stocked: true,  name: 'Baseball'},
-      {category: 'Sporting Goods', price: '$29.99',  stocked: false, name: 'Basketball'},
-      {category: 'Electronics',    price: '$99.99',  stocked: true,  name: 'iPod Touch'},
-      {category: 'Electronics',    price: '$399.99', stocked: false, name: 'iPhone 5'},
-      {category: 'Electronics',    price: '$199.99', stocked: true,  name: 'Nexus 7'}
+      {category: 'Sporting',     price: '$49.99',  stocked: true,  name: 'Football'},
+      {category: 'Sporting',     price: '$9.99',   stocked: true,  name: 'Baseball'},
+      {category: 'Sporting',     price: '$29.99',  stocked: false, name: 'Basketball'},
+      {category: 'Electronics',  price: '$99.99',  stocked: true,  name: 'iPod Touch'},
+      {category: 'Electronics',  price: '$399.99', stocked: false, name: 'iPhone 5'},
+      {category: 'Electronics',  price: '$199.99', stocked: true,  name: 'Nexus 7'}
     ];
 
     React.render(
