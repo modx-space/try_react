@@ -36,6 +36,8 @@
             <InputBar onUserInput={this.handleUserInput} />
             <hr />
             <ToDoSection data={this.state.data} />
+            <hr />
+            <DoneSection data={this.state.data} />
           </div>
         );
       }
@@ -96,7 +98,40 @@
         );
       }
     });
-    
+
+    var DoneSection = React.createClass({
+      render: function() {
+        var dones = [];
+        this.props.data.forEach(function (todo) {
+          if (todo.done == true) {
+            return (<ToDoItem name={todo.name} />);
+          }
+        });
+
+        return (
+          <div>
+            <div>
+              <h4>
+                <span className="label label-success">Done</span>
+              </h4>
+            </div>
+            {dones}
+          </div>
+        );
+      }
+    });
+
+    var DoneItem = React.createClass({
+      render: function() {
+        return (
+          <div className="input-group has-success">
+            <span className="input-group-addon">√</span>
+            <input type="text" className="form-control" value={this.props.name} readOnly />
+          </div>
+        );
+      }
+    });
+
     React.render(<ToDoApp />, document.getElementById('content'));
     </script>
   </body>
