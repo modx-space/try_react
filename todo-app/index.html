@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="../lib/react.js" charset="utf-8"></script>
+    <script src="../lib/JSXTransformer.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../lib/bootstrap.css" charset="utf-8">
+    <title>ToDo-APP</title>
+  </head>
+  <body>
+      <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+          <center>
+            <h3>
+              <span class="label label-info">Todo App</span>
+            </h3>
+          </center>
+          <div id="content"></div>
+        </div>
+      </div>
+
+    <script type="text/jsx">
+    var ToDoApp = React.createClass({
+      getInitialState: function () {
+        return {data: []};
+      },
+
+      handleUserInput: function (item) {
+        var newItems = this.state.data.concat({'name': item, 'done': false});
+        this.setState({data: newItems});
+      },
+
+      render: function() {
+        return (
+          <div>
+            <InputBar onUserInput={this.handleUserInput} />
+            <hr />
+            <ToDoSection data={this.state.data} />
+          </div>
+        );
+      }
+    });
+
+    var InputBar = React.createClass({
+      handleSubmit: function (e) {
+        e.preventDefault();
+        this.props.onUserInput(
+          this.refs.newItem.getDOMNode().value
+        );
+      },
+
+      render: function() {
+        return (
+          <form onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <input type="text" className="form-control"
+                     id="newItem" ref="newItem"
+                     placeholder="New Item" />
+            </div>
+          </form>
+        );
+      }
+    });
+
+    var ToDoSection = React.createClass({
+      render: function() {
+        var todos = [];
+        this.props.data.forEach(function (todo) {
+          if (todo.done == false) {
+            todos.push(<ToDoItem name={todo.name} />);
+          }
+        });
+
+        return (
+          <div>
+            <div>
+              <h4>
+                <span className="label label-primary">ToDo</span>
+              </h4>
+            </div>
+            {todos}
+          </div>
+        );
+      }
+    });
+
+    var ToDoItem = React.createClass({
+      render: function() {
+        return (
+          <div className="input-group has-warning">
+            <span className="input-group-addon">
+              <input type="checkbox" />
+            </span>
+            <input type="text" className="form-control" value={this.props.name} />
+          </div>
+        );
+      }
+    });
+    
+    React.render(<ToDoApp />, document.getElementById('content'));
+    </script>
+  </body>
+</html>
