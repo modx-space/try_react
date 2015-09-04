@@ -58,6 +58,7 @@
         this.props.onUserInput(
           this.refs.newItem.getDOMNode().value
         );
+        this.refs.newItem.getDOMNode().value = '';
       },
 
       render: function() {
