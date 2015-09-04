@@ -30,12 +30,21 @@
         this.setState({data: newItems});
       },
 
+      handleDone: function (item) {
+        this.state.data.forEach(function (todo) {
+          if (todo.name == item.name) {
+            todo.done = true
+          }
+        });
+        this.setState({data: this.state.data});
+      },
+
       render: function() {
         return (
           <div>
             <InputBar onUserInput={this.handleUserInput} />
             <hr />
-            <ToDoSection data={this.state.data} />
+            <ToDoSection data={this.state.data} onDone={this.handleDone}/>
             <hr />
             <DoneSection data={this.state.data} />
           </div>
@@ -65,13 +74,19 @@
     });
 
     var ToDoSection = React.createClass({
+      handleDone: function (item) {
+        this.props.onDone(item);
+      },
+
       render: function() {
         var todos = [];
-        this.props.data.forEach(function (todo) {
-          if (todo.done == false) {
-            todos.push(<ToDoItem name={todo.name} />);
-          }
-        });
+        {
+          this.props.data.forEach(function (todo) {
+            if (todo.done == false) {
+              todos.push(<ToDoItem item={todo} onDone={this.handleDone} key={todo.name} />);
+            }
+          }, this)
+        };
 
         return (
           <div>
@@ -87,13 +102,17 @@
     });
 
     var ToDoItem = React.createClass({
+      handleChange: function () {
+        this.props.onDone(this.props.item);
+      },
+
       render: function() {
         return (
           <div className="input-group has-warning">
             <span className="input-group-addon">
-              <input type="checkbox" />
+              <input type="checkbox" onChange={this.handleChange} />
             </span>
-            <input type="text" className="form-control" value={this.props.name} />
+            <input type="text" className="form-control" value={this.props.item.name} />
           </div>
         );
       }
@@ -104,7 +123,7 @@
         var dones = [];
         this.props.data.forEach(function (todo) {
           if (todo.done == true) {
-            return (<ToDoItem name={todo.name} />);
+            dones.push(<DoneItem item={todo} key={todo.name} />);
           }
         });
 
@@ -126,7 +145,7 @@
         return (
           <div className="input-group has-success">
             <span className="input-group-addon">√</span>
-            <input type="text" className="form-control" value={this.props.name} readOnly />
+            <input type="text" className="form-control" value={this.props.item.name} readOnly />
           </div>
         );
       }
